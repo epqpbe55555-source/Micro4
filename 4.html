@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Smart — Gram-Positive Spore-Forming Bacilli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF0E8;
+    --bg-panel:#F8F9F3;
+    --ink:#1F2A24;
+    --ink-soft:#5B6459;
+    --culture:#3D6B4F;
+    --culture-dark:#26432F;
+    --culture-tint:#E1EADD;
+    --toxin:#A63D40;
+    --toxin-dark:#7E2C2E;
+    --toxin-tint:#F3E1DF;
+    --gold:#B9822C;
+    --gold-tint:#F1E6CE;
+    --line:#D2CDBB;
+    --white:#FFFFFF;
+    --shadow: 0 6px 20px rgba(31,42,36,0.08);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--gold-tint); }
+
+  /* subtle agar texture */
+  .texture{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.5;
+    background-image: radial-gradient(circle at 12% 18%, rgba(61,107,79,0.05) 0, transparent 40%),
+                       radial-gradient(circle at 85% 8%, rgba(166,61,64,0.05) 0, transparent 35%),
+                       radial-gradient(circle at 70% 85%, rgba(185,130,44,0.06) 0, transparent 40%);
+  }
+
+  header.top{
+    position:relative; z-index:2;
+    padding:38px 24px 20px;
+    max-width:1100px; margin:0 auto;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--culture-dark); font-weight:700;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--culture);display:inline-block;}
+  h1.brand{
+    font-family:'Fraunces', serif; font-weight:700; font-style:normal;
+    font-size:clamp(38px, 7vw, 64px); line-height:0.98; margin:10px 0 6px;
+    letter-spacing:-0.01em;
+  }
+  h1.brand em{ font-style:italic; color:var(--culture); font-weight:500; }
+  .sub{
+    font-size:15px; color:var(--ink-soft); max-width:560px; line-height:1.5;
+    margin-bottom:4px;
+  }
+  .lecturer{
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--ink-soft);
+    margin-top:14px; letter-spacing:.02em;
+  }
+
+  nav.tabs{
+    position:sticky; top:0; z-index:10;
+    background:rgba(238,240,232,0.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:10px 24px;
+  }
+  .tabs-inner{
+    max-width:1100px; margin:0 auto;
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  .tabs-inner::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto;
+    display:flex; align-items:center; gap:8px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13.5px;
+    color:var(--ink-soft);
+    background:var(--white); border:1px solid var(--line); border-radius:100px;
+    padding:9px 16px 9px 10px; cursor:pointer; transition:all .18s ease;
+    white-space:nowrap;
+  }
+  .tab-btn .plate{
+    width:16px; height:16px; border-radius:50%; flex:0 0 auto;
+    border:1.5px solid rgba(0,0,0,0.12);
+    background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.6), transparent 40%), var(--plate-color, var(--culture));
+  }
+  .tab-btn:hover{ border-color:var(--ink-soft); color:var(--ink); }
+  .tab-btn.active{
+    background:var(--ink); color:var(--white); border-color:var(--ink);
+  }
+  .tab-btn.active .plate{ box-shadow:0 0 0 2px rgba(255,255,255,0.25) inset; }
+
+  main{ max-width:1100px; margin:0 auto; padding:36px 24px 90px; position:relative; z-index:2;}
+  .panel{ display:none; animation:fade .35s ease; }
+  .panel.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-head{ margin-bottom:26px; }
+  .section-head h2{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(26px,4vw,34px); margin:0 0 6px;
+  }
+  .section-head p{ color:var(--ink-soft); font-size:14.5px; margin:0; max-width:620px; }
+
+  /* ---------- OVERVIEW ---------- */
+  .rule-strip{
+    background:var(--ink); color:var(--white); border-radius:14px;
+    padding:16px 20px; display:flex; gap:14px; align-items:flex-start;
+    margin-bottom:28px; font-family:'JetBrains Mono', monospace; font-size:13px; line-height:1.6;
+  }
+  .rule-strip b{ color:var(--gold-tint); }
+  .organism-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:720px){ .organism-grid{ grid-template-columns:1fr; } }
+  .card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:16px;
+    padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .card h3{
+    font-family:'Fraunces', serif; font-size:19px; margin:0 0 4px; font-style:italic; font-weight:600;
+  }
+  .card .tag{
+    display:inline-block; font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.08em; padding:3px 9px; border-radius:100px;
+    margin-bottom:10px; font-weight:700;
+  }
+  .tag.aerobe{ background:var(--culture-tint); color:var(--culture-dark); }
+  .tag.anaerobe{ background:var(--toxin-tint); color:var(--toxin-dark); }
+  .card ul{ margin:0; padding-left:18px; font-size:13.6px; line-height:1.65; color:var(--ink); }
+  .card ul li{ margin-bottom:5px; }
+  .card ul b{ color:var(--culture-dark); }
+  .card.toxin ul b{ color:var(--toxin-dark); }
+  .law-box{
+    margin-top:28px; border:1.5px dashed var(--gold); border-radius:14px;
+    background:var(--gold-tint); padding:18px 20px;
+  }
+  .law-box h4{ margin:0 0 10px; font-family:'Fraunces',serif; font-size:16px; }
+  .law-box ol{ margin:0; padding-left:18px; font-size:13.6px; line-height:1.7; }
+
+  /* ---------- DIAGRAMS ---------- */
+  .diagram-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:16px;
+    padding:22px; margin-bottom:22px; box-shadow:var(--shadow);
+  }
+  .diagram-card h3{ font-family:'Fraunces',serif; font-size:19px; margin:0 0 4px; }
+  .diagram-card .hint{ font-size:12.5px; color:var(--ink-soft); margin-bottom:16px; font-family:'JetBrains Mono',monospace;}
+  .chip-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .chip{
+    border:1.5px solid var(--ink); background:var(--white); color:var(--ink);
+    padding:9px 15px; border-radius:100px; font-weight:700; font-size:13px; cursor:pointer;
+    transition:all .15s ease; font-family:'Inter',sans-serif;
+  }
+  .chip:hover{ background:var(--ink); color:var(--white); }
+  .chip.on{ background:var(--culture); border-color:var(--culture); color:var(--white); }
+  .chip.on.tx{ background:var(--toxin); border-color:var(--toxin); }
+  .reveal{
+    border-left:3px solid var(--culture); background:var(--culture-tint);
+    padding:14px 16px; border-radius:0 10px 10px 0; font-size:13.8px; line-height:1.6;
+    display:none;
+  }
+  .reveal.show{ display:block; animation:fade .25s ease; }
+  .reveal.tx{ border-color:var(--toxin); background:var(--toxin-tint); }
+
+  .flow{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px;}
+  .flow .node{
+    border:1.5px solid var(--line); background:var(--white); border-radius:10px;
+    padding:10px 14px; font-size:12.8px; font-weight:600; cursor:pointer; text-align:center;
+  }
+  .flow .node:hover{ border-color:var(--culture); }
+  .flow .arrow{ color:var(--ink-soft); font-size:16px; }
+
+  .toggle-row{ display:flex; background:var(--white); border:1px solid var(--line); border-radius:100px; padding:4px; width:fit-content; margin-bottom:16px; }
+  .toggle-row button{
+    border:none; background:transparent; padding:8px 16px; border-radius:100px; font-weight:700;
+    font-size:12.8px; cursor:pointer; color:var(--ink-soft); font-family:'Inter',sans-serif;
+  }
+  .toggle-row button.active{ background:var(--ink); color:var(--white); }
+
+  table.compare{ width:100%; border-collapse:collapse; font-size:13.2px; }
+  table.compare th{ text-align:left; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:8px 10px; border-bottom:2px solid var(--ink); }
+  table.compare td{ padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5; }
+
+  .synapse-box{ display:flex; gap:22px; flex-wrap:wrap; align-items:center; }
+  .synapse-visual{
+    width:220px; height:150px; border-radius:14px; background:var(--white); border:1px solid var(--line);
+    position:relative; overflow:hidden; flex:0 0 auto;
+  }
+  .synapse-visual .terminal{ position:absolute; top:14px; left:20px; right:20px; height:44px; background:var(--gold-tint); border-radius:10px 10px 30px 30px; border:1.5px solid var(--gold); }
+  .synapse-visual .muscle{ position:absolute; bottom:14px; left:20px; right:20px; height:34px; background:var(--culture-tint); border-radius:8px; border:1.5px solid var(--culture); }
+  .synapse-visual .gap{ position:absolute; top:58px; left:20px; right:20px; height:36px; display:flex; align-items:center; justify-content:space-evenly; }
+  .vesicle{ width:9px; height:9px; border-radius:50%; background:var(--ink); transition:all .3s ease; }
+  .vesicle.blocked{ background:var(--toxin); opacity:.35; transform:translateY(-6px);}
+  .synapse-desc{ flex:1; min-width:220px; font-size:13.6px; line-height:1.65; }
+  .synapse-desc b{ color:var(--toxin-dark); }
+
+  .accordion-item{ border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden; background:var(--white); }
+  .accordion-head{
+    display:flex; justify-content:space-between; align-items:center; padding:13px 16px; cursor:pointer;
+    font-weight:700; font-size:13.6px;
+  }
+  .accordion-head .plus{ font-family:'JetBrains Mono',monospace; color:var(--ink-soft); transition:transform .2s ease; }
+  .accordion-item.open .plus{ transform:rotate(45deg); }
+  .accordion-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; font-size:13.2px; line-height:1.6; color:var(--ink-soft); padding:0 16px; }
+  .accordion-item.open .accordion-body{ max-height:220px; padding:0 16px 15px; }
+
+  /* ---------- MINI MAP ---------- */
+  .minimap-wrap{ display:grid; grid-template-columns:280px 1fr; gap:20px; }
+  @media(max-width:760px){ .minimap-wrap{ grid-template-columns:1fr; } }
+  .minimap-list{ display:flex; flex-direction:column; gap:14px; }
+  .minimap-group h4{
+    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--ink-soft); margin:0 0 8px;
+  }
+  .mm-title{
+    display:block; width:100%; text-align:left; background:var(--white); border:1px solid var(--line);
+    border-radius:10px; padding:10px 13px; font-size:13.4px; font-weight:600; cursor:pointer; margin-bottom:6px;
+    color:var(--ink); transition:all .15s ease;
+  }
+  .mm-title:hover{ border-color:var(--culture); }
+  .mm-title.active{ background:var(--ink); color:var(--white); border-color:var(--ink); }
+  .minimap-reader{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:16px; padding:24px;
+    min-height:320px; box-shadow:var(--shadow); position:sticky; top:70px; align-self:start;
+  }
+  .minimap-reader .placeholder{ color:var(--ink-soft); font-size:13.5px; font-family:'JetBrains Mono',monospace; }
+  .minimap-reader h3{ font-family:'Fraunces',serif; font-style:italic; font-size:20px; margin:0 0 12px; }
+  .minimap-reader .body-text{ font-size:14px; line-height:1.7; }
+  .minimap-reader .body-text ul{ padding-left:18px; margin:8px 0; }
+  .minimap-reader .body-text li{ margin-bottom:6px; }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-controls{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center;}
+  .fc-controls button{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12.6px; padding:9px 15px;
+    border-radius:100px; border:1.5px solid var(--ink); background:var(--white); cursor:pointer;
+  }
+  .fc-controls button:hover{ background:var(--ink); color:var(--white); }
+  .fc-count{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft); margin-left:auto; }
+  .fc-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:16px; }
+  .fc-card{ perspective:1200px; height:170px; cursor:pointer; }
+  .fc-inner{ position:relative; width:100%; height:100%; transition:transform .5s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; }
+  .fc-card.flipped .fc-inner{ transform:rotateY(180deg); }
+  .fc-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; padding:16px;
+    display:flex; align-items:center; justify-content:center; text-align:center; font-size:13.4px; line-height:1.5;
+    box-shadow:var(--shadow); border:1px solid var(--line);
+  }
+  .fc-front{ background:var(--white); font-weight:700; color:var(--ink); }
+  .fc-front::before{
+    content:'?'; position:absolute; top:10px; left:12px; font-family:'Fraunces',serif; font-style:italic;
+    color:var(--line); font-size:22px;
+  }
+  .fc-back{ background:var(--culture); color:var(--white); transform:rotateY(180deg); }
+
+  /* ---------- QUIZ ---------- */
+  .quiz-top{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:22px; }
+  .score-pill{
+    background:var(--ink); color:var(--white); font-family:'JetBrains Mono',monospace; font-size:13px;
+    padding:9px 16px; border-radius:100px; font-weight:700;
+  }
+  .quiz-top button{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12.8px; padding:9px 16px;
+    border-radius:100px; border:1.5px solid var(--ink); background:var(--white); cursor:pointer;
+  }
+  .quiz-top button:hover{ background:var(--ink); color:var(--white); }
+  .q-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+    margin-bottom:14px;
+  }
+  .q-card .q-num{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ink-soft); margin-bottom:6px; }
+  .q-card .q-text{ font-weight:700; font-size:14.6px; margin-bottom:12px; line-height:1.5; }
+  .q-opts{ display:flex; flex-direction:column; gap:8px; }
+  .q-opt{
+    text-align:left; background:var(--white); border:1.5px solid var(--line); border-radius:10px;
+    padding:10px 13px; font-size:13.4px; cursor:pointer; font-family:'Inter',sans-serif; transition:all .15s ease;
+  }
+  .q-opt:hover{ border-color:var(--ink); }
+  .q-opt.correct{ background:var(--culture-tint); border-color:var(--culture); color:var(--culture-dark); font-weight:700; }
+  .q-opt.wrong{ background:var(--toxin-tint); border-color:var(--toxin); color:var(--toxin-dark); font-weight:700; }
+  .q-opt.disabled{ pointer-events:none; opacity:.75; }
+  .q-opt.disabled:not(.correct):not(.wrong){ opacity:.5; }
+
+  footer{
+    text-align:center; padding:34px 20px 46px; font-family:'JetBrains Mono',monospace;
+    font-size:11.5px; color:var(--ink-soft); border-top:1px solid var(--line); position:relative; z-index:2;
+  }
+  footer .mark{ color:var(--culture-dark); font-weight:700; }
+</style>
+</head>
+<body>
+<div class="texture"></div>
+
+<header class="top">
+  <div class="eyebrow"><span class="dot"></span>MEDICAL MICROBIOLOGY · SECOND STAGE · LEC. 4</div>
+  <h1 class="brand">Study <em>Smart</em></h1>
+  <p class="sub">Gram-Positive Bacilli / Spore-Forming — Bacillus &amp; Clostridium species, built for fast review and active recall.</p>
+  <div class="lecturer">Source lecture — Asst. Prof. Hanan Raheem Hassooni</div>
+</header>
+
+<nav class="tabs">
+  <div class="tabs-inner" id="tabsInner">
+    <button class="tab-btn active" data-tab="overview"><span class="plate" style="--plate-color:var(--culture)"></span>Overview</button>
+    <button class="tab-btn" data-tab="diagrams"><span class="plate" style="--plate-color:var(--toxin)"></span>Diagrams</button>
+    <button class="tab-btn" data-tab="minimap"><span class="plate" style="--plate-color:var(--gold)"></span>Mini Map</button>
+    <button class="tab-btn" data-tab="flashcards"><span class="plate" style="--plate-color:var(--culture)"></span>Flash Cards</button>
+    <button class="tab-btn" data-tab="quiz"><span class="plate" style="--plate-color:var(--toxin)"></span>Quiz Bank</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ===================== OVERVIEW ===================== -->
+  <section class="panel active" id="panel-overview">
+    <div class="section-head">
+      <h2>The essentials, not the whole lecture</h2>
+      <p>Every rule and grouping worth memorizing before you touch a diagram or a quiz.</p>
+    </div>
+
+    <div class="rule-strip">
+      <div><b>RULE 1 —</b> Bacillus = aerobic, Clostridium = anaerobic. Both are Gram-positive, spore-forming, environmentally hardy rods.<br>
+      <b>RULE 2 —</b> Spores let both genera survive for years in soil, dust, and water — infection happens when the spore finds a host.</div>
+    </div>
+
+    <div class="organism-grid">
+      <div class="card">
+        <span class="tag aerobe">Aerobe</span>
+        <h3>Bacillus anthracis</h3>
+        <ul>
+          <li>Obligate <b>endospore-forming</b> pathogen; grows aerobically or anaerobically.</li>
+          <li>Differs from B. cereus by <b>virulence plasmids</b>.</li>
+          <li>3 disease forms: <b>cutaneous</b> (most common, skin wound), <b>pulmonary</b> (inhaled spores), <b>GI</b> (ingestion, rare in humans).</li>
+          <li>Toxin = 3 proteins: <b>PA</b> (entry channel), <b>EF</b> (+PA → edema toxin), <b>LF</b> (+PA → lethal toxin).</li>
+          <li>Anthrax is primarily a disease of <b>herbivores</b>; humans infected accidentally.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag aerobe">Aerobe</span>
+        <h3>Bacillus cereus</h3>
+        <ul>
+          <li>Normal soil inhabitant; causes <b>gastroenteritis</b> and <b>ocular infections</b>.</li>
+          <li><b>Heat-stable</b> enterotoxin → emetic form (vomiting), classic with reheated <b>rice</b>, onset 1–6 h — true intoxication, not infection.</li>
+          <li><b>Heat-labile</b> enterotoxin → diarrheal form, onset 8–16 h, acts on small intestine.</li>
+          <li>Ocular infection follows eye contact with soil-contaminated objects.</li>
+        </ul>
+      </div>
+      <div class="card toxin">
+        <span class="tag anaerobe">Anaerobe</span>
+        <h3>Clostridium botulinum</h3>
+        <ul>
+          <li>Foodborne botulism from improperly canned/preserved/fermented foods.</li>
+          <li>7 toxin serotypes (A–G); <b>A, B, E, F</b> cause human illness — type E linked to fish.</li>
+          <li>Toxin absorbed from gut → blood → binds <b>presynaptic motor neuron</b> receptors, blocking <b>acetylcholine</b> release → flaccid paralysis.</li>
+        </ul>
+      </div>
+      <div class="card toxin">
+        <span class="tag anaerobe">Anaerobe</span>
+        <h3>Clostridium tetani</h3>
+        <ul>
+          <li>Spores in soil, animal/human feces, rusty tools; resistant to heat and antiseptics.</li>
+          <li>Toxin = <b>tetanospasmin</b> — blocks release of <b>inhibitory</b> neurotransmitters → continuous excitatory stimulation → rigidity and spasm.</li>
+          <li>Especially serious in <b>newborns and pregnant women</b>.</li>
+        </ul>
+      </div>
+      <div class="card toxin" style="grid-column:1/-1;">
+        <span class="tag anaerobe">Anaerobe</span>
+        <h3>Clostridium perfringens</h3>
+        <ul>
+          <li>Capsulated, non-motile; causes <b>gas gangrene</b> and food poisoning.</li>
+          <li><b>Alpha toxin</b> — lyses RBCs/platelets/leukocytes, hemolysis, tissue and hepatic/myocardial damage; also drives the anaerobic environment in gas gangrene.</li>
+          <li><b>Beta toxin</b> — necrotic lesions in enterocolitis.</li>
+          <li><b>Epsilon toxin</b> — increases intestinal and vascular permeability.</li>
+          <li><b>Enterotoxin</b> — heat-labile, causes colon food poisoning.</li>
+          <li>Spreading enzymes: <b>collagenase, hyaluronidase, DNase</b>.</li>
+          <li>Gas gangrene mainly driven by <b>alpha + theta</b> toxins together.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="law-box">
+      <h4>Four exam laws to lock in</h4>
+      <ol>
+        <li>PA is <b>non-toxic alone</b> — toxicity only appears once combined: PA+EF = edema, PA+LF = lethal.</li>
+        <li>Heat-<b>stable</b> = vomiting/emetic; heat-<b>labile</b> = diarrhea. Same organism (B. cereus), opposite toxin behavior.</li>
+        <li>Botulinum blocks an <b>excitatory</b> transmitter (ACh) → flaccid paralysis. Tetanospasmin blocks an <b>inhibitory</b> transmitter → rigid paralysis. Opposite mechanisms, opposite presentations.</li>
+        <li>C. perfringens toxin lettering (alpha/beta/epsilon) maps to distinct jobs: alpha = hemolysis, beta = necrotic enterocolitis, epsilon = permeability.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== DIAGRAMS ===================== -->
+  <section class="panel" id="panel-diagrams">
+    <div class="section-head">
+      <h2>Interactive diagrams</h2>
+      <p>Tap the parts. Every diagram below responds — build the toxin, flip the switch, open the panel.</p>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Anthrax toxin assembly</h3>
+      <div class="hint">tap EF or LF to combine with PA</div>
+      <div class="chip-row">
+        <button class="chip" id="chip-pa" disabled>PA — protective antigen (always present)</button>
+        <button class="chip" id="chip-ef" onclick="toggleAnthrax('ef')">+ EF</button>
+        <button class="chip" id="chip-lf" onclick="toggleAnthrax('lf')">+ LF</button>
+      </div>
+      <div class="reveal" id="reveal-ef">
+        <b>PA + EF = Edema toxin.</b> PA binds specific cell receptors and, after proteolytic activation, forms a membrane channel that lets EF enter the cell. The resulting edema toxin is responsible for cell and tissue edema.
+      </div>
+      <div class="reveal tx" id="reveal-lf">
+        <b>PA + LF = Lethal toxin.</b> Same PA channel, different cargo. Lethal toxin is the major virulence factor and the principal cause of death in infected animals and humans.
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Routes of anthrax infection</h3>
+      <div class="hint">tap a route</div>
+      <div class="flow">
+        <div class="node" onclick="showRoute('cut')">Cutaneous</div>
+        <span class="arrow">·</span>
+        <div class="node" onclick="showRoute('pulm')">Pulmonary</div>
+        <span class="arrow">·</span>
+        <div class="node" onclick="showRoute('gi')">Gastrointestinal</div>
+      </div>
+      <div class="reveal" id="route-out">Tap a route above to read how it's acquired and what it causes.</div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>B. cereus — two toxins, two diseases</h3>
+      <div class="hint">switch between the emetic and diarrheal forms</div>
+      <div class="toggle-row">
+        <button class="active" id="bc-btn-emetic" onclick="setBcereus('emetic')">Heat-stable (emetic)</button>
+        <button id="bc-btn-diarrh" onclick="setBcereus('diarrh')">Heat-labile (diarrheal)</button>
+      </div>
+      <table class="compare">
+        <tr><th>Attribute</th><th id="bc-col-title">Heat-stable enterotoxin</th></tr>
+        <tr><td>Heat behavior</td><td id="bc-heat">Resistant — survives cooking</td></tr>
+        <tr><td>Classic food</td><td id="bc-food">Reheated / rehydrated rice left at room temperature</td></tr>
+        <tr><td>Mechanism</td><td id="bc-mech">Toxin preformed in food before ingestion — true intoxication, not infection</td></tr>
+        <tr><td>Onset</td><td id="bc-onset">1–6 hours</td></tr>
+        <tr><td>Duration</td><td id="bc-duration">Under 24 hours</td></tr>
+        <tr><td>Symptom</td><td id="bc-symptom">Vomiting (emetic)</td></tr>
+      </table>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Botulinum vs. tetanus at the synapse</h3>
+      <div class="hint">tap to see the neuromuscular junction change</div>
+      <div class="toggle-row">
+        <button class="active" id="syn-btn-normal" onclick="setSynapse('normal')">Normal</button>
+        <button id="syn-btn-botox" onclick="setSynapse('botox')">Botulinum</button>
+        <button id="syn-btn-tet" onclick="setSynapse('tet')">Tetanus</button>
+      </div>
+      <div class="synapse-box">
+        <div class="synapse-visual">
+          <div class="terminal"></div>
+          <div class="gap" id="synapse-vesicles"></div>
+          <div class="muscle"></div>
+        </div>
+        <div class="synapse-desc" id="synapse-text">
+          Normal junction: acetylcholine vesicles release freely across the neuromuscular junction, triggering controlled muscle contraction.
+        </div>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <h3>Clostridium perfringens toxin map</h3>
+      <div class="hint">tap each toxin</div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Alpha toxin</span><span class="plus">+</span></div>
+        <div class="accordion-body">Lyses RBCs, platelets, and leukocytes. Increases vascular permeability with massive hemolysis and bleeding, tissue destruction, hepatic toxicity, and myocardial dysfunction. Also drives the anaerobic environment central to gas gangrene.</div>
+      </div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Beta toxin</span><span class="plus">+</span></div>
+        <div class="accordion-body">Responsible for the necrotic lesions seen in enterocolitis.</div>
+      </div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Epsilon toxin</span><span class="plus">+</span></div>
+        <div class="accordion-body">Increases both intestinal and vascular permeability.</div>
+      </div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Enterotoxin</span><span class="plus">+</span></div>
+        <div class="accordion-body">Heat-labile toxin produced in the colon; responsible for C. perfringens food poisoning.</div>
+      </div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Spreading enzymes</span><span class="plus">+</span></div>
+        <div class="accordion-body">Collagenase, hyaluronidase (breaks down hyaluronic acid, raising tissue permeability to fluids), and DNase help the infection spread through soft tissue.</div>
+      </div>
+      <div class="accordion-item" onclick="toggleAcc(this)">
+        <div class="accordion-head"><span>Gas gangrene: alpha + theta</span><span class="plus">+</span></div>
+        <div class="accordion-body">Alpha toxin's hemolytic activity cuts blood flow, keeping neutrophils, monocytes, eosinophils, and basophils from reaching the site — producing the anaerobic environment the bacteria need. Theta toxin adds vascular degradation and triggers a platelet-activation-driven inflammatory response that constricts nearby arteries, reinforcing that same anaerobic environment.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MINI MAP ===================== -->
+  <section class="panel" id="panel-minimap">
+    <div class="section-head">
+      <h2>Mini map</h2>
+      <p>Tap any title on the left — the full text opens in the reader on the right.</p>
+    </div>
+    <div class="minimap-wrap">
+      <div class="minimap-list" id="mmList"></div>
+      <div class="minimap-reader" id="mmReader">
+        <div class="placeholder">Select a title to open it here →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FLASHCARDS ===================== -->
+  <section class="panel" id="panel-flashcards">
+    <div class="section-head">
+      <h2>Flash cards</h2>
+      <p>Tap a card to flip it. Covers every organism in the lecture.</p>
+    </div>
+    <div class="fc-controls">
+      <button onclick="flipAll(true)">Flip all</button>
+      <button onclick="flipAll(false)">Reset all</button>
+      <button onclick="shuffleCards()">Shuffle</button>
+      <span class="fc-count" id="fcCount"></span>
+    </div>
+    <div class="fc-grid" id="fcGrid"></div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section class="panel" id="panel-quiz">
+    <div class="section-head">
+      <h2>Quiz bank</h2>
+      <p>30+ questions. Answer order is reshuffled every time the quiz loads or resets.</p>
+    </div>
+    <div class="quiz-top">
+      <div class="score-pill" id="scorePill">Score: 0 / 0</div>
+      <button onclick="renderQuiz(true)">Reshuffle &amp; restart</button>
+    </div>
+    <div id="quizList"></div>
+  </section>
+
+</main>
+
+<footer>
+  © <span class="mark">Anmar Taha</span> — All rights reserved. Study Smart · Medical Microbiology, Lec. 4
+</footer>
+
+<script>
+/* ---------- TAB SWITCHING ---------- */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+/* ---------- DIAGRAM: anthrax toxin ---------- */
+function toggleAnthrax(which){
+  const chip = document.getElementById('chip-'+which);
+  const reveal = document.getElementById('reveal-'+which);
+  chip.classList.toggle('on');
+  if(which==='lf') chip.classList.toggle('tx');
+  reveal.classList.toggle('show');
+}
+
+/* ---------- DIAGRAM: anthrax routes ---------- */
+const routes = {
+  cut: "<b>Cutaneous anthrax</b> — the most common form. Spores penetrate the skin through a wound or cut, leading to tissue damage and a characteristic black eschar.",
+  pulm: "<b>Pulmonary anthrax</b> — acquired by inhaling airborne spores from contaminated animal skin, wool, or hair.",
+  gi: "<b>Gastrointestinal anthrax</b> — ulcers form at the site of invasion (mouth, esophagus, intestine). Very rare in humans via ingestion, though common in animals."
+};
+function showRoute(key){
+  const out = document.getElementById('route-out');
+  out.innerHTML = routes[key];
+  out.classList.add('show');
+}
+
+/* ---------- DIAGRAM: B. cereus toggle ---------- */
+function setBcereus(mode){
+  document.getElementById('bc-btn-emetic').classList.toggle('active', mode==='emetic');
+  document.getElementById('bc-btn-diarrh').classList.toggle('active', mode==='diarrh');
+  const map = {
+    emetic:{title:"Heat-stable enterotoxin", heat:"Resistant — survives cooking", food:"Reheated / rehydrated rice left at room temperature", mech:"Toxin preformed in food before ingestion — true intoxication, not infection", onset:"1–6 hours", duration:"Under 24 hours", symptom:"Vomiting (emetic)"},
+    diarrh:{title:"Heat-labile enterotoxin", heat:"Sensitive — inactivated by heat (optimum at 37°C)", food:"Wide variety of foods", mech:"Formed after ingesting large numbers of bacterial cells; acts on the small intestine", onset:"8–16 hours", duration:"1 day or longer", symptom:"Diarrhea, nausea, abdominal pain"}
+  };
+  const d = map[mode];
+  document.getElementById('bc-col-title').textContent = d.title;
+  document.getElementById('bc-heat').textContent = d.heat;
+  document.getElementById('bc-food').textContent = d.food;
+  document.getElementById('bc-mech').textContent = d.mech;
+  document.getElementById('bc-onset').textContent = d.onset;
+  document.getElementById('bc-duration').textContent = d.duration;
+  document.getElementById('bc-symptom').textContent = d.symptom;
+}
+
+/* ---------- DIAGRAM: synapse ---------- */
+function setSynapse(mode){
+  ['normal','botox','tet'].forEach(m=>document.getElementById('syn-btn-'+(m==='normal'?'normal':m)).classList.toggle('active', m===mode));
+  const vesContainer = document.getElementById('synapse-vesicles');
+  vesContainer.innerHTML = '';
+  const texts = {
+    normal: "Normal junction: acetylcholine vesicles release freely across the neuromuscular junction, triggering controlled muscle contraction.",
+    botox: "<b>Botulinum toxin</b> is absorbed from the gut, enters circulation, and binds presynaptic receptors on motor neurons — blocking acetylcholine release. Result: flaccid paralysis.",
+    tet: "<b>Tetanospasmin</b> travels to the central nervous system and blocks release of inhibitory neurotransmitters, leaving excitatory signals unchecked. Result: muscle rigidity and spasm."
+  };
+  document.getElementById('synapse-text').innerHTML = texts[mode];
+  for(let i=0;i<5;i++){
+    const v = document.createElement('div');
+    v.className = 'vesicle';
+    if(mode==='botox') v.classList.add('blocked');
+    if(mode==='tet' && i%2===0) v.classList.add('blocked');
+    vesContainer.appendChild(v);
+  }
+}
+setSynapse('normal');
+
+/* ---------- accordion ---------- */
+function toggleAcc(el){ el.classList.toggle('open'); }
+
+/* ---------- MINI MAP DATA ---------- */
+const miniMap = [
+  {group:"Bacillus anthracis", items:[
+    {title:"Overview", body:"Gram-positive rod-shaped bacterium, an obligate endospore-forming pathogen. Grows under both aerobic and anaerobic conditions. Differs from B. cereus because of differences in virulence plasmids."},
+    {title:"Disease forms", body:"<ul><li><b>Cutaneous</b> — most common; spores penetrate skin through a wound or cut.</li><li><b>Pulmonary</b> — inhaling airborne spores from contaminated animal skin, wool, or hair.</li><li><b>Gastrointestinal</b> — ulcers at the site of invasion; ingestion anthrax is rare in humans but common in animals.</li></ul>"},
+    {title:"Anthrax cycle", body:"In the environment B. anthracis exists as dormant spores that begin replicating on entering a mammalian host. Anthrax is primarily a herbivore disease (goats, sheep, cattle, horses). Humans are infected accidentally through contact with infected animals or their products."},
+    {title:"Toxin components", body:"Anthrax toxin is made of three proteins — <b>PA</b> (protective antigen), <b>EF</b> (edema factor), <b>LF</b> (lethal factor) — nontoxic individually but toxic when combined. PA binds specific cell receptors and, after proteolytic activation, forms a membrane channel that lets EF and LF enter the cell."},
+    {title:"Edema and lethal toxin", body:"<b>EF + PA</b> = edema toxin, responsible for cell and tissue edema. <b>LF + PA</b> = lethal toxin, a major virulence factor and cause of death in infected animals and humans."}
+  ]},
+  {group:"Bacillus cereus", items:[
+    {title:"Overview", body:"A normal inhabitant of the soil. Causes gastroenteritis (food poisoning) and ocular infections."},
+    {title:"Emetic (heat-stable) toxin", body:"B. cereus survives in dry environments like soil by producing resistant spores. When food contaminated with spores (e.g. rice) is rehydrated and left at room temperature, spores germinate and produce heat-stable enterotoxin before ingestion. Cooking does not destroy it. This is an intoxication, not an infection — onset 1–6 hours, duration under 24 hours."},
+    {title:"Diarrheal (heat-labile) toxin", body:"Sensitive to heat (optimum at 37°C). Grows in a wide variety of foods. Formed after ingesting large numbers of bacterial cells; acts on the small intestine, causing diarrhea and abdominal pain 8–16 hours after ingestion. Illness lasts a day or longer."},
+    {title:"Ocular infections", body:"Occur through contact of the eye with a soil-contaminated object."}
+  ]},
+  {group:"Clostridium botulinum", items:[
+    {title:"Overview", body:"Foodborne botulism results from eating food contaminated with botulinum toxin — commonly homemade foods that were incorrectly canned, preserved, or fermented; store-bought canned foods can also be contaminated. Seven antigenic toxin serotypes (A–G) exist; types A, B, E, and F cause most human illness. Types A and B are linked to a variety of foods, type E mainly to fish products."},
+    {title:"Mechanism", body:"Botulinum toxin is absorbed from the gut, enters the blood circulation, and binds to receptors on presynaptic membranes of motor neurons of the peripheral nervous system and cranial nerves — blocking acetylcholine release and producing flaccid paralysis."}
+  ]},
+  {group:"Clostridium tetani", items:[
+    {title:"Overview", body:"Tetanus is an acute infectious disease caused by spores of Clostridium tetani, found everywhere in the environment — mainly soil, intestinal tracts/feces of animals and humans, and on rusty tools (spikes, needles, barbed wire). Spores are very resistant to heat and most antiseptics and can survive for years. Tetanus is especially common and serious in newborn babies and pregnant women."},
+    {title:"Mechanism", body:"C. tetani produces tetanospasmin, which blocks release of inhibitory neurotransmitters. With inhibition removed, continuous stimulation by excitatory transmitters causes muscle rigidity and hyper-sympathetic activity — the hallmark of tetanus."}
+  ]},
+  {group:"Clostridium perfringens", items:[
+    {title:"Overview", body:"Capsulated, non-motile organism that produces gas gangrene, attacking soft tissue by producing toxins (including enterotoxins)."},
+    {title:"Toxin roster", body:"<ul><li><b>Alpha toxin</b> — lyses RBCs, platelets, and leukocytes; increases vascular permeability with massive hemolysis and bleeding, tissue destruction, hepatic toxicity, and myocardial dysfunction.</li><li><b>Beta toxin</b> — responsible for necrotic lesions in enterocolitis.</li><li><b>Epsilon toxin</b> — increases intestinal and vascular permeability.</li><li><b>Enterotoxin</b> — heat-labile, produced in colon food poisoning.</li></ul>"},
+    {title:"Spreading enzymes", body:"Collagenase, hyaluronidase (breaks down hyaluronic acid and increases tissue permeability to fluids), and DNase."},
+    {title:"Gas gangrene mechanism", body:"Driven mainly by alpha toxin and theta toxin. Alpha toxin's hemolytic activity reduces blood flow to the infection site, keeping neutrophils, monocytes, eosinophils, and basophils from reaching it — producing the anaerobic environment the bacteria need to grow. Theta toxin also promotes vascular degradation and, via a platelet-activation factor, triggers acute inflammation that constricts nearby arteries, reinforcing that same anaerobic environment."}
+  ]}
+];
+
+const mmList = document.getElementById('mmList');
+const mmReader = document.getElementById('mmReader');
+miniMap.forEach((grp, gi)=>{
+  const g = document.createElement('div');
+  g.className = 'minimap-group';
+  const h = document.createElement('h4');
+  h.textContent = grp.group;
+  g.appendChild(h);
+  grp.items.forEach((item, ii)=>{
+    const b = document.createElement('button');
+    b.className = 'mm-title';
+    b.textContent = item.title;
+    b.onclick = ()=>{
+      document.querySelectorAll('.mm-title').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      mmReader.innerHTML = '<h3>'+grp.group+' — '+item.title+'</h3><div class="body-text">'+item.body+'</div>';
+    };
+    g.appendChild(b);
+  });
+  mmList.appendChild(g);
+});
+
+/* ---------- FLASHCARDS DATA ---------- */
+const flashcards = [
+  {f:"Are Bacillus species aerobic or anaerobic?", b:"Aerobic."},
+  {f:"Are Clostridium species aerobic or anaerobic?", b:"Anaerobic."},
+  {f:"What lets Bacillus and Clostridium survive for years in the environment?", b:"Spore formation."},
+  {f:"What distinguishes B. anthracis from B. cereus?", b:"Differences due to virulence plasmids."},
+  {f:"Most common clinical form of anthrax?", b:"Cutaneous anthrax."},
+  {f:"How is cutaneous anthrax acquired?", b:"Spores penetrate skin through a wound or cut."},
+  {f:"How is pulmonary anthrax acquired?", b:"Inhaling airborne spores from contaminated animal skin, wool, or hair."},
+  {f:"What happens in GI anthrax?", b:"Ulcers form at the site of invasion (mouth, esophagus, intestine)."},
+  {f:"Which animals does anthrax primarily affect?", b:"Herbivores — goats, sheep, cattle, horses."},
+  {f:"Name the three proteins of anthrax toxin.", b:"Protective antigen (PA), edema factor (EF), lethal factor (LF)."},
+  {f:"Role of protective antigen (PA)?", b:"Binds cell receptors and forms a membrane channel for EF/LF entry."},
+  {f:"PA + EF = ?", b:"Edema toxin — causes cell and tissue edema."},
+  {f:"PA + LF = ?", b:"Lethal toxin — the major virulence factor and cause of death."},
+  {f:"Two disease categories caused by B. cereus?", b:"Gastroenteritis (food poisoning) and ocular infections."},
+  {f:"B. cereus heat-stable enterotoxin causes which form?", b:"Emetic (vomiting) form."},
+  {f:"Classic food source for B. cereus emetic toxin?", b:"Reheated / rehydrated rice."},
+  {f:"Incubation period of B. cereus emetic form?", b:"1–6 hours."},
+  {f:"Is B. cereus emetic disease an infection or intoxication?", b:"An intoxication — caused by preformed toxin, not the bacteria."},
+  {f:"B. cereus heat-labile toxin causes which form, and onset?", b:"Diarrheal form, onset 8–16 hours."},
+  {f:"How are B. cereus ocular infections acquired?", b:"Contact of the eye with a soil-contaminated object."},
+  {f:"Where is Clostridium normal flora?", b:"The mammalian gastrointestinal tract."},
+  {f:"Which botulinum toxin serotypes cause most human illness?", b:"Types A, B, E, and F."},
+  {f:"Which botulinum serotype is linked mainly to fish products?", b:"Type E."},
+  {f:"Mechanism of botulinum toxin?", b:"Binds presynaptic motor neuron receptors and blocks acetylcholine release."},
+  {f:"Result of blocked acetylcholine release in botulism?", b:"Flaccid paralysis."},
+  {f:"Where are C. tetani spores commonly found?", b:"Soil, animal/human feces, and rusty tools."},
+  {f:"Name of the tetanus toxin.", b:"Tetanospasmin."},
+  {f:"Mechanism of tetanospasmin?", b:"Blocks release of inhibitory neurotransmitters, causing rigidity."},
+  {f:"Who is tetanus especially serious in?", b:"Newborn babies and pregnant women."},
+  {f:"What disease does C. perfringens cause in soft tissue?", b:"Gas gangrene."},
+  {f:"Effect of C. perfringens alpha toxin?", b:"Lyses RBCs/platelets/leukocytes, causes hemolysis and tissue destruction."},
+  {f:"Effect of C. perfringens beta toxin?", b:"Necrotic lesions in enterocolitis."},
+  {f:"Effect of C. perfringens epsilon toxin?", b:"Increases intestinal and vascular permeability."},
+  {f:"C. perfringens enterotoxin — heat property and role?", b:"Heat-labile; causes colon food poisoning."},
+  {f:"Three spreading enzymes of C. perfringens?", b:"Collagenase, hyaluronidase, DNase."},
+  {f:"Two toxins mainly responsible for gas gangrene?", b:"Alpha toxin and theta toxin."},
+  {f:"Why does alpha toxin's hemolysis help the bacteria?", b:"It cuts blood flow so immune cells can't reach the site, creating an anaerobic environment."},
+  {f:"Effect of theta toxin in gas gangrene?", b:"Promotes vascular degradation and triggers inflammation that constricts nearby arteries."}
+];
+
+const fcGrid = document.getElementById('fcGrid');
+function renderCards(list){
+  fcGrid.innerHTML = '';
+  list.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'fc-card';
+    card.innerHTML = '<div class="fc-inner"><div class="fc-face fc-front">'+c.f+'</div><div class="fc-face fc-back">'+c.b+'</div></div>';
+    card.onclick = ()=>card.classList.toggle('flipped');
+    fcGrid.appendChild(card);
+  });
+  document.getElementById('fcCount').textContent = list.length + ' cards';
+}
+function flipAll(state){ document.querySelectorAll('.fc-card').forEach(c=>c.classList.toggle('flipped', state)); }
+function shuffleCards(){
+  const shuffled = [...flashcards].sort(()=>Math.random()-0.5);
+  renderCards(shuffled);
+}
+renderCards(flashcards);
+
+/* ---------- QUIZ DATA ---------- */
+const quizBank = [
+  {q:"What type of bacteria are Bacillus and Clostridium species?", correct:"Gram-positive, spore-forming bacilli", wrong:["Gram-negative, non-spore-forming cocci","Acid-fast branching filaments","Gram-positive, non-spore-forming cocci"]},
+  {q:"Bacillus species are metabolically:", correct:"Aerobic", wrong:["Anaerobic","Microaerophilic","Facultative only in soil"]},
+  {q:"Clostridium species are metabolically:", correct:"Anaerobic", wrong:["Obligate aerobic","Aerotolerant only","Capnophilic"]},
+  {q:"Which Bacillus species is described as a normal inhabitant of soil, water, air, and vegetation?", correct:"B. subtilis", wrong:["B. anthracis","B. cereus","C. perfringens"]},
+  {q:"B. anthracis differs from B. cereus mainly because of:", correct:"Differences in virulence plasmids", wrong:["Differences in cell wall thickness","Oxygen requirements","Spore location within the cell"]},
+  {q:"B. anthracis can grow under:", correct:"Both aerobic and anaerobic conditions", wrong:["Strictly aerobic conditions only","Strictly anaerobic conditions only","Only in the presence of CO2"]},
+  {q:"The most common clinical form of anthrax is:", correct:"Cutaneous anthrax", wrong:["Pulmonary anthrax","Gastrointestinal anthrax","Meningeal anthrax"]},
+  {q:"Cutaneous anthrax results when:", correct:"Spores penetrate the skin through a wound or cut", wrong:["Spores are inhaled into the lungs","Spores are ingested with contaminated meat","Spores enter through the conjunctiva"]},
+  {q:"Pulmonary anthrax is acquired by:", correct:"Inhaling airborne spores from contaminated animal skin, wool, or hair", wrong:["Drinking contaminated water","Direct person-to-person respiratory droplets","Insect bites"]},
+  {q:"Gastrointestinal anthrax is characterized by:", correct:"Ulcers at the site of invasion, e.g. mouth, esophagus, intestine", wrong:["Massive watery diarrhea only","Hepatic abscess formation","Pancreatic necrosis"]},
+  {q:"Anthrax is primarily considered a disease of:", correct:"Herbivores such as goats, sheep, cattle, and horses", wrong:["Rodents","Birds","Reptiles"]},
+  {q:"Anthrax toxin is composed of how many proteins?", correct:"Three", wrong:["Two","Four","Five"]},
+  {q:"Which anthrax toxin protein binds specific cell receptors and forms a membrane channel?", correct:"Protective antigen (PA)", wrong:["Edema factor (EF)","Lethal factor (LF)","Tetanospasmin"]},
+  {q:"PA combined with EF forms:", correct:"Edema toxin", wrong:["Lethal toxin","Enterotoxin","Cytotoxin"]},
+  {q:"PA combined with LF forms:", correct:"Lethal toxin, the major virulence factor and cause of death", wrong:["Edema toxin, causing localized swelling only","A nontoxic complex","Tetanospasmin"]},
+  {q:"B. cereus is a normal inhabitant of:", correct:"Soil", wrong:["The human respiratory tract","Freshwater fish gills","Bird feathers"]},
+  {q:"B. cereus causes which two categories of disease?", correct:"Gastroenteritis and ocular infections", wrong:["Meningitis and pneumonia","Endocarditis and osteomyelitis","Hepatitis and nephritis"]},
+  {q:"The heat-stable enterotoxin of B. cereus causes which clinical form?", correct:"Emetic (vomiting) form", wrong:["Diarrheal form","Hemorrhagic colitis","Pseudomembranous colitis"]},
+  {q:"A classic food source for the B. cereus emetic toxin is:", correct:"Reheated or rehydrated rice left at room temperature", wrong:["Improperly canned vegetables","Raw shellfish","Unpasteurized milk"]},
+  {q:"The incubation period for B. cereus emetic disease is:", correct:"1–6 hours", wrong:["24–48 hours","8–16 hours","3–5 days"]},
+  {q:"B. cereus emetic disease is best classified as:", correct:"An intoxication from preformed toxin, not an infection", wrong:["A true bacterial infection of the gut wall","A toxin-mediated bloodstream infection","A viral co-infection syndrome"]},
+  {q:"The heat-labile enterotoxin of B. cereus causes which clinical form?", correct:"Diarrheal form", wrong:["Emetic form","Ocular infection","Cutaneous infection"]},
+  {q:"Onset of the B. cereus diarrheal form after ingestion is typically:", correct:"8–16 hours", wrong:["1–6 hours","30 minutes","3–7 days"]},
+  {q:"B. cereus ocular infections usually occur by:", correct:"Eye contact with a soil-contaminated object", wrong:["Airborne spore inhalation into the sinuses","Bloodborne spread from the gut","Contaminated contact lens solution only"]},
+  {q:"Clostridia are found widely as normal flora in:", correct:"Mammalian gastrointestinal tracts", wrong:["Human skin only","The upper respiratory tract","Bone marrow"]},
+  {q:"How many antigenic serotypes of botulinum toxin are known?", correct:"Seven (A–G)", wrong:["Three (A–C)","Ten (A–J)","Five (A–E)"]},
+  {q:"Which botulinum toxin types are the principal causes of human illness?", correct:"A, B, E, and F", wrong:["C, D, and G only","A and C only","All seven equally"]},
+  {q:"Which botulinum toxin type is mainly associated with fish products?", correct:"Type E", wrong:["Type A","Type B","Type F"]},
+  {q:"Botulinum toxin, once absorbed, binds to receptors on:", correct:"Presynaptic membranes of motor neurons", wrong:["Postsynaptic muscle membranes only","Red blood cell membranes","Astrocyte membranes"]},
+  {q:"Botulinum toxin causes disease by blocking release of:", correct:"Acetylcholine", wrong:["GABA","Glycine","Dopamine"]},
+  {q:"Clostridium tetani spores are commonly found on:", correct:"Rusty tools such as spikes, needles, and barbed wire", wrong:["Fresh produce only","Hospital surfaces primarily","Drinking water reservoirs"]},
+  {q:"C. tetani spores are notably resistant to:", correct:"Heat and most antiseptics", wrong:["Only ultraviolet light","Freezing temperatures only","Desiccation only"]},
+  {q:"The tetanus toxin is named:", correct:"Tetanospasmin", wrong:["Tetanolysin","Tetanotoxin A","Neurospasmin"]},
+  {q:"Tetanospasmin works by:", correct:"Blocking release of inhibitory neurotransmitters", wrong:["Blocking release of acetylcholine","Directly lysing motor neurons","Blocking sodium channel closure"]},
+  {q:"The clinical result of blocked inhibitory transmitter release in tetanus is:", correct:"Muscle rigidity and hyper-sympathetic activity", wrong:["Flaccid paralysis","Sensory loss only","Cranial nerve palsy only"]},
+  {q:"Tetanus is especially common and serious in:", correct:"Newborn babies and pregnant women", wrong:["Adolescents only","Elderly men only","Immunized adults"]},
+  {q:"Clostridium perfringens is described as:", correct:"Capsulated and non-motile", wrong:["Non-capsulated and motile","Capsulated and motile","Non-capsulated and non-motile"]},
+  {q:"C. perfringens is best known for causing:", correct:"Gas gangrene", wrong:["Pseudomembranous colitis","Necrotizing fasciitis from group A strep only","Toxic shock syndrome"]},
+  {q:"Which C. perfringens toxin lyses red blood cells, platelets, and leukocytes?", correct:"Alpha toxin", wrong:["Beta toxin","Epsilon toxin","Enterotoxin"]},
+  {q:"Which C. perfringens toxin is responsible for necrotic lesions in enterocolitis?", correct:"Beta toxin", wrong:["Alpha toxin","Epsilon toxin","DNase"]},
+  {q:"Which C. perfringens toxin increases intestinal and vascular permeability?", correct:"Epsilon toxin", wrong:["Alpha toxin","Beta toxin","Collagenase"]},
+  {q:"The C. perfringens enterotoxin responsible for food poisoning is:", correct:"Heat-labile, produced in the colon", wrong:["Heat-stable, produced in the small intestine","Heat-stable, produced before ingestion","Heat-labile, produced in gastric acid"]},
+  {q:"Hyaluronidase produced by C. perfringens acts by:", correct:"Breaking down hyaluronic acid and increasing tissue permeability to fluids", wrong:["Digesting bacterial DNA","Lysing red blood cells directly","Blocking neurotransmitter release"]},
+  {q:"Which two toxins are the common virulence factors in C. perfringens gas gangrene?", correct:"Alpha toxin and theta toxin", wrong:["Beta toxin and epsilon toxin","Alpha toxin and tetanospasmin","Enterotoxin and DNase"]},
+  {q:"Alpha toxin promotes an anaerobic environment in gas gangrene mainly by:", correct:"Causing hemolysis that decreases blood flow, keeping immune cells from reaching the site", wrong:["Directly killing bacteria that compete for oxygen","Increasing local oxygen delivery","Neutralizing local antiseptics"]},
+  {q:"Theta toxin contributes to gas gangrene by:", correct:"Promoting vascular degradation and triggering inflammation that constricts nearby arteries", wrong:["Directly blocking acetylcholine release","Forming spores that resist antibiotics","Increasing oxygen diffusion into tissue"]}
+];
+
+function shuffleArr(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+let score = 0, answered = 0;
+function renderQuiz(reset){
+  const list = document.getElementById('quizList');
+  list.innerHTML = '';
+  score = 0; answered = 0;
+  updateScore();
+  const order = shuffleArr(quizBank);
+  order.forEach((item, idx)=>{
+    const options = shuffleArr([{t:item.correct, ok:true}, ...item.wrong.map(w=>({t:w, ok:false}))]);
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    const num = document.createElement('div');
+    num.className = 'q-num';
+    num.textContent = 'QUESTION ' + (idx+1) + ' / ' + order.length;
+    const qt = document.createElement('div');
+    qt.className = 'q-text';
+    qt.textContent = item.q;
+    const opts = document.createElement('div');
+    opts.className = 'q-opts';
+    options.forEach(opt=>{
+      const b = document.createElement('button');
+      b.className = 'q-opt';
+      b.textContent = opt.t;
+      b.onclick = ()=>{
+        const allBtns = opts.querySelectorAll('.q-opt');
+        allBtns.forEach(x=>x.classList.add('disabled'));
+        if(opt.ok){ b.classList.add('correct'); score++; }
+        else{
+          b.classList.add('wrong');
+          allBtns.forEach(x=>{ if(x.textContent===item.correct) x.classList.add('correct'); });
+        }
+        answered++;
+        updateScore();
+      };
+      opts.appendChild(b);
+    });
+    card.appendChild(num);
+    card.appendChild(qt);
+    card.appendChild(opts);
+    list.appendChild(card);
+  });
+}
+function updateScore(){
+  document.getElementById('scorePill').textContent = 'Score: ' + score + ' / ' + answered;
+}
+renderQuiz();
+</script>
+</body>
+</html>
