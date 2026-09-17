@@ -256,20 +256,27 @@
   .fc-controls button:hover{ background:var(--ink); color:var(--white); }
   .fc-count{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink-soft); margin-left:auto; }
   .fc-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:16px; }
-  .fc-card{ perspective:1200px; height:170px; cursor:pointer; }
+  .fc-card{ perspective:1200px; height:210px; cursor:pointer; }
   .fc-inner{ position:relative; width:100%; height:100%; transition:transform .5s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; }
   .fc-card.flipped .fc-inner{ transform:rotateY(180deg); }
   .fc-face{
     position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; padding:16px;
     display:flex; align-items:center; justify-content:center; text-align:center; font-size:13.4px; line-height:1.5;
     box-shadow:var(--shadow); border:1px solid var(--line);
+    overflow-y:auto; overflow-x:hidden;
   }
+  .fc-face::-webkit-scrollbar{ width:5px; }
+  .fc-face::-webkit-scrollbar-thumb{ background:var(--line); border-radius:10px; }
   .fc-front{ background:var(--white); font-weight:700; color:var(--ink); }
   .fc-front::before{
     content:'?'; position:absolute; top:10px; left:12px; font-family:'Fraunces',serif; font-style:italic;
     color:var(--line); font-size:22px;
   }
   .fc-back{ background:var(--culture); color:var(--white); transform:rotateY(180deg); }
+  @media (max-width:480px){
+    .fc-card{ height:230px; }
+    .fc-face{ font-size:12.6px; padding:14px; }
+  }
 
   /* ---------- QUIZ ---------- */
   .quiz-top{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:22px; }
